@@ -1,0 +1,33 @@
+# Python 3.8+
+
+# Web Crawling
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Embedding
+sentence-transformers>=2.2.0
+torch>=2.0.0
+
+# Database
+psycopg2-binary>=2.9.0
+
+# PDF Processing (optional)
+pdfminer.six>=20221105
+
+# Utilities
+python-dotenv>=1.0.0
+tqdm>=4.65.0
+
+# API
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.0.0

@@ -1,0 +1,68 @@
+{
+  "1": {
+    "lab_id": 1,
+    "kor_name": "",
+    "eng_name": null,
+    "professor": null,
+    "homepage": null,
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": "Robotics Lab 연구실"
+  },
+  "2": {
+    "lab_id": 2,
+    "kor_name": "",
+    "eng_name": null,
+    "professor": null,
+    "homepage": null,
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": "Computer Vision Lab 연구실"
+  },
+  "3": {
+    "lab_id": 3,
+    "kor_name": "",
+    "eng_name": null,
+    "professor": null,
+    "homepage": null,
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": "NLP Lab 연구실"
+  },
+  "4": {
+    "lab_id": 4,
+    "kor_name": "Computer Vision Lab",
+    "eng_name": "Computer Vision Lab",
+    "professor": null,
+    "homepage": "https://example.com/computer_vision_lab",
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": "Computer Vision Lab 연구실"
+  },
+  "5": {
+    "lab_id": 5,
+    "kor_name": "Robotics Lab",
+    "eng_name": "Robotics Lab",
+    "professor": null,
+    "homepage": "https://example.com/robotics_lab",
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": "Robotics Lab 연구실"
+  },
+  "6": {
+    "lab_id": 6,
+    "kor_name": "NLP Lab",
+    "eng_name": "NLP Lab",
+    "professor": null,
+    "homepage": "https://example.com/nlp_lab",
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": "NLP Lab 연구실"
+  }
+}

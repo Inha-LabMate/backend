@@ -1,0 +1,13 @@
+{
+  "1": {
+    "lab_id": 1,
+    "kor_name": "AI 연구실",
+    "eng_name": "AI Lab",
+    "professor": "홍길동",
+    "homepage": "https://ailab.example.com",
+    "location": null,
+    "contact_email": null,
+    "contact_phone": null,
+    "description": null
+  }
+}
