@@ -276,9 +276,13 @@ class LabCrawler:
             response = requests.get(
                 base_url,
                 timeout=self.config.TIMEOUT,
-                headers={'User-Agent': self.config.USER_AGENT}
+                headers={'User-Agent': self.config.USER_AGENT},
+                allow_redirects=True  # 리다이렉트 허용
             )
             response.raise_for_status()
+            
+            # 실제 URL (리다이렉트 후)
+            actual_url = response.url
             
             soup = BeautifulSoup(response.content, 'html.parser')
             
@@ -295,12 +299,28 @@ class LabCrawler:
                 if any(kw in href.lower() or kw in text for kw in relevant_keywords):
                     # 절대 URL 변환
                     from urllib.parse import urljoin, urlparse
-                    full_url = urljoin(base_url, href)
+                    full_url = urljoin(actual_url, href)  # 리다이렉트된 URL 사용
                     
                     # 같은 도메인만
-                    if urlparse(full_url).netloc == urlparse(base_url).netloc:
-                        if full_url not in pages:
-                            pages.append(full_url)
+                    if urlparse(full_url).netloc == urlparse(actual_url).netloc:
+                        # 중복 경로 확인 (예: /view/vcl-lab/view/vcl-lab)
+                        parsed = urlparse(full_url)
+                        path = parsed.path
+                        
+                        # 경로 중복 제거 (간단한 휴리스틱)
+                        path_parts = [p for p in path.split('/') if p]
+                        seen = set()
+                        unique_parts = []
+                        for part in path_parts:
+                            if part not in seen or part in ['view', 'page']:  # 'view', 'page'는 중복 허용
+                                unique_parts.append(part)
+                                seen.add(part)
+                        
+                        cleaned_path = '/' + '/'.join(unique_parts)
+                        cleaned_url = f"{parsed.scheme}://{parsed.netloc}{cleaned_path}"
+                        
+                        if cleaned_url not in pages and cleaned_url != base_url:
+                            pages.append(cleaned_url)
         
         except Exception as e:
             print(f"    ⚠️  페이지 발견 실패: {e}")
@@ -311,22 +331,47 @@ class LabCrawler:
         """단일 페이지 크롤링"""
         self.visited_urls.add(url)
         
-        # HTML 가져오기
-        response = requests.get(
-            url,
-            timeout=self.config.TIMEOUT,
-            headers={'User-Agent': self.config.USER_AGENT}
-        )
-        response.raise_for_status()
-        
-        # 청킹
-        chunks = self.doc_processor.process_html(
-            html=response.text,
-            url=url,
-            crawl_depth=crawl_depth
-        )
-        
-        return chunks
+        try:
+            # HTML 가져오기
+            response = requests.get(
+                url,
+                timeout=self.config.TIMEOUT,
+                headers={'User-Agent': self.config.USER_AGENT},
+                allow_redirects=True
+            )
+            response.raise_for_status()
+            
+            # 응답 내용 확인
+            if not response.text or len(response.text) < 100:
+                print(f"    ⚠️  빈 응답: {url}")
+                return []
+            
+            # 청킹
+            chunks = self.doc_processor.process_html(
+                html=response.text,
+                url=url,
+                crawl_depth=crawl_depth
+            )
+            
+            return chunks
+            
+        except requests.exceptions.HTTPError as e:
+            # HTTP 에러 (404, 403 등)는 조용히 처리
+            if e.response.status_code in [404, 403, 410]:
+                print(f"    ⚠️  페이지 없음 ({e.response.status_code}): {url}")
+            else:
+                print(f"    ⚠️  HTTP 에러 ({e.response.status_code}): {url}")
+            return []
+            
+        except requests.exceptions.RequestException as e:
+            # 네트워크 에러 (타임아웃, 연결 실패 등)
+            print(f"    ⚠️  네트워크 에러: {url} - {str(e)}")
+            return []
+            
+        except Exception as e:
+            # 기타 에러 (파싱 에러 등)
+            print(f"    ⚠️  처리 에러: {url} - {type(e).__name__}: {str(e)}")
+            return []
     
     def _process_chunk(self, chunk: Chunk, lab_id: int) -> Optional[Dict]:
         """청크 처리 (정규화 + 임베딩)"""

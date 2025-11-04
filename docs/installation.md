@@ -22,19 +22,19 @@ PostgreSQL 없이 JSON 파일만으로 사용하는 방법입니다.
 #### Windows (PowerShell)
 ```powershell
 # 가상환경 생성
-python -m venv venv
+python -m venv .venv
 
 # 가상환경 활성화
-.\venv\Scripts\activate
+.\.venv\Scripts\activate
 ```
 
 #### macOS/Linux (Bash)
 ```bash
 # 가상환경 생성
-python3 -m venv venv
+python3 -m venv .venv
 
 # 가상환경 활성화
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ### 2. 패키지 설치
@@ -42,7 +42,15 @@ source venv/bin/activate
 ```bash
 # 기본 패키지 설치
 pip install -r requirements.txt
+
+# ⭐ Playwright 브라우저 설치 (중요!)
+python -m playwright install chromium
 ```
+
+**Playwright 브라우저 설치:**
+- 약 150MB 다운로드
+- Chromium 브라우저 설치
+- JavaScript 렌더링을 위해 필수!
 
 ### 3. 설치 확인
 
@@ -50,8 +58,11 @@ pip install -r requirements.txt
 # src 폴더로 이동
 cd src
 
-# 테스트 실행
-python -c "from embedding import EmbeddingPipeline; print('설치 성공!')"
+# 임베딩 테스트
+python -c "from embedding import EmbeddingPipeline; print('✅ 임베딩 설치 성공!')"
+
+# Playwright 테스트
+python -c "from playwright.sync_api import sync_playwright; print('✅ Playwright 설치 성공!')"
 ```
 
 첫 실행 시 임베딩 모델(약 1.1GB)이 자동으로 다운로드됩니다.
@@ -138,14 +149,14 @@ CREATE DATABASE labsearch;
 ### 필수 패키지
 
 ```txt
-# 크롤링
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-lxml>=4.9.0
+# 웹 크롤링 - Playwright (JavaScript 렌더링)
+playwright>=1.40.0          # ⭐ 핵심: Google Sites, Wix 등 JavaScript 사이트 크롤링
+beautifulsoup4>=4.12.0      # HTML 파싱
+lxml>=4.9.0                 # XML/HTML 파서
 
 # 임베딩
-sentence-transformers>=2.2.0
-torch>=2.0.0
+sentence-transformers>=2.2.0  # 텍스트 임베딩
+torch>=2.0.0                  # PyTorch
 
 # 데이터 처리
 numpy>=1.24.0
@@ -155,6 +166,27 @@ pandas>=2.0.0
 tqdm>=4.65.0
 python-dotenv>=1.0.0
 ```
+
+### Playwright 추가 설치
+
+**중요:** pip install만으로는 부족합니다!
+
+```bash
+# 1단계: Python 패키지 설치
+pip install playwright
+
+# 2단계: 브라우저 설치 (필수!)
+python -m playwright install chromium
+
+# 또는 전체 브라우저 설치 (선택)
+python -m playwright install  # chromium, firefox, webkit 모두
+```
+
+**왜 브라우저를 별도로 설치하나요?**
+- Playwright는 실제 브라우저를 제어
+- JavaScript를 실행하려면 브라우저 필요
+- 약 150MB 크기
+- 한 번만 설치하면 됨
 
 ### 선택 패키지
 
@@ -291,21 +323,49 @@ conn.close()
 
 ## 🐛 문제 해결
 
-### 문제 1: "ModuleNotFoundError"
+### 문제 1: "ModuleNotFoundError: No module named 'playwright'"
 
-**원인:** 가상환경이 활성화되지 않았거나 패키지 미설치
+**원인:** Playwright 미설치 또는 가상환경 미활성화
 
 **해결:**
 ```bash
-# 가상환경 활성화
-.\venv\Scripts\activate  # Windows
-source venv/bin/activate  # Mac/Linux
+# 가상환경 활성화 확인
+.\.venv\Scripts\activate  # Windows
+source .venv/bin/activate  # Mac/Linux
 
-# 패키지 재설치
-pip install -r requirements.txt
+# Playwright 설치
+pip install playwright
+python -m playwright install chromium
 ```
 
-### 문제 2: "torch가 설치되지 않음"
+### 문제 2: "Executable doesn't exist at ..." (Playwright)
+
+**원인:** 브라우저 설치 누락
+
+**해결:**
+```bash
+# 브라우저 재설치
+python -m playwright install chromium
+
+# 또는 전체 재설치
+python -m playwright install --force
+```
+
+### 문제 3: "playwright install 명령어가 안됨"
+
+**원인:** Python 모듈로 실행해야 함
+
+**잘못된 방법:**
+```bash
+playwright install chromium  # ❌ 작동 안함
+```
+
+**올바른 방법:**
+```bash
+python -m playwright install chromium  # ✅ 이렇게!
+```
+
+### 문제 4: "torch가 설치되지 않음"
 
 **원인:** PyTorch 설치 실패
 

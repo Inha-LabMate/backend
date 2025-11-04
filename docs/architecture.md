@@ -7,8 +7,7 @@
 │                        사용자                                │
 └────────────────┬────────────────────────────────────────────┘
                  │
-    ┌────────────┴────────────┐
-    │                         │
+    ┌────────────┴───────────
     ▼                         ▼
 ┌─────────┐            ┌──────────────┐
 │크롤링    │            │검색           │
@@ -21,10 +20,11 @@
 ┌──────────────────────────────────────┐
 │         핵심 파이프라인               │
 │  ┌────────────────────────────────┐ │
-│  │ 1. 크롤링 관리자                │ │
-│  │    - robots.txt 준수           │ │
+│  │ 1. 크롤링 관리자 (Playwright)   │ │
+│  │    - JavaScript 완전 실행       │ │
+│  │    - 네트워크 완료 대기         │ │
 │  │    - 속도 제어 & 재시도        │ │
-│  │    - HTTP 캐싱                 │ │
+│  │    - 캐싱                      │ │
 │  └────────────────────────────────┘ │
 │  ┌────────────────────────────────┐ │
 │  │ 2. 콘텐츠 추출                  │ │
@@ -196,33 +196,64 @@ class CrawlOrchestrator:
 
 ### 2. crawl_manager.py
 
-**역할:** 예의바른 크롤링
+**역할:** Playwright 기반 JavaScript 렌더링 크롤링
 
 **주요 클래스:**
 
 #### `CrawlManager`
 ```python
 class CrawlManager:
-    """크롤링 관리자"""
+    """Playwright 기반 크롤링 관리자"""
     
     def __init__(
         self,
-        delay=1.0,              # 요청 간 대기 시간 (초)
-        max_retries=3,          # 최대 재시도 횟수
-        timeout=10,             # 타임아웃 (초)
-        cache_dir='./crawl_cache',
-        respect_robots=True,    # robots.txt 준수
-        user_agent='...'
+        delay=1.0,                 # 요청 간 대기 시간 (초)
+        max_retries=3,             # 최대 재시도 횟수
+        timeout=30000,             # 페이지 로딩 타임아웃 (밀리초)
+        headless=True,             # 브라우저 창 안 띄움
+        wait_for_network_idle=True, # 네트워크 완료까지 대기
+        cache_dir='./crawl_cache'
     )
     
-    def fetch_url(url: str) -> FetchResult:
-        """URL 가져오기 (속도 제한, 재시도, 캐싱)"""
-        # 1. robots.txt 확인
+    def fetch_url(url: str) -> CrawlResult:
+        """URL 가져오기 (Playwright로 JavaScript 실행)"""
+        # 1. 캐시 확인
         # 2. 속도 제어 (마지막 요청 후 delay 대기)
-        # 3. 요청 (타임아웃, User-Agent)
-        # 4. 실패 시 재시도 (지수 백오프)
-        # 5. 캐싱 (ETag, Last-Modified)
+        # 3. Playwright로 브라우저 실행
+        # 4. JavaScript 실행 완료까지 대기
+        # 5. 최종 HTML 추출
+        # 6. 실패 시 재시도 (지수 백오프)
+        # 7. 캐싱
 ```
+
+**Playwright 크롤링 과정:**
+```python
+with sync_playwright() as p:
+    # 1. Chromium 브라우저 실행 (headless)
+    browser = p.chromium.launch(headless=True)
+    
+    # 2. 새 페이지 열기
+    context = browser.new_context(user_agent=...)
+    page = context.new_page()
+    
+    # 3. URL 접속 + JavaScript 실행
+    page.goto(url, wait_until='networkidle')  # 네트워크 완료까지 대기
+    
+    # 4. 추가 대기 (동적 콘텐츠)
+    page.wait_for_timeout(1000)  # 1초
+    
+    # 5. 최종 HTML 추출
+    html = page.content()
+    
+    # 6. 브라우저 종료
+    browser.close()
+```
+
+**왜 Playwright?**
+- ✅ Google Sites: JavaScript로 콘텐츠 생성 → Playwright 필수
+- ✅ Wix: 동적 렌더링 → Playwright 필수
+- ✅ React/Vue SPA: 초기 HTML 비어있음 → Playwright 필수
+- ❌ requests: 정적 HTML만 가져옴 → 최신 사이트 대부분 실패
 
 **재시도 전략 (지수 백오프):**
 ```python

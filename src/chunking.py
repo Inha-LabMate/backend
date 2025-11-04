@@ -165,18 +165,28 @@ class ContentExtractor:
         # 2. 노이즈 클래스 제거
         # 예: <div class="sidebar menu"> → 삭제
         for element in soup.find_all(class_=True):
+            # attrs가 None인 경우 처리
+            if not hasattr(element, 'attrs') or element.attrs is None:
+                continue
+            
             classes = element.get('class', [])
-            if any(noise in ' '.join(classes).lower() 
+            if isinstance(classes, list) and any(noise in ' '.join(classes).lower() 
                    for noise in ContentExtractor.NOISE_PATTERNS['classes']):
                 element.decompose()
         
         # 3. 노이즈 ID 제거
         # 예: <div id="navigation"> → 삭제
         for element in soup.find_all(id=True):
-            element_id = element.get('id', '').lower()
-            if any(noise in element_id 
+            # attrs가 None인 경우 처리
+            if not hasattr(element, 'attrs') or element.attrs is None:
+                continue
+            
+            element_id = element.get('id', '')
+            if isinstance(element_id, str) and any(noise in element_id.lower() 
                    for noise in ContentExtractor.NOISE_PATTERNS['ids']):
                 element.decompose()
+        
+        return soup
         
         return soup
     
@@ -476,13 +486,14 @@ class TextChunker:
         )
     
     def chunk_text(self, text: str, section: str = 'general', 
+                   title: Optional[str] = None,
                    source_url: str = '', crawl_depth: int = 0) -> List[Chunk]:
         """텍스트를 청크로 분리"""
         paragraphs = TextChunker.split_by_paragraphs(text)
         chunks = []
         
         current_chunk_text = ""
-        current_title = None
+        current_title = title  # 전달받은 title 사용
         
         for para in paragraphs:
             # 헤딩이면 제목으로 설정
@@ -525,167 +536,7 @@ class TextChunker:
         return chunks
 
 
-class ContentExtractor:
-    """텍스트 청킹 (200-400자 기준)"""
-    
-    MIN_CHUNK_SIZE = 200  # 최소 청크 크기 (문자)
-    MAX_CHUNK_SIZE = 400  # 최대 청크 크기 (문자)
-    OVERLAP_SIZE = 50     # 청크 간 오버랩 (문자)
-    
-    @staticmethod
-    def estimate_tokens(text: str) -> int:
-        """
-        토큰 수 추정 (한글/영문 혼합)
-        - 한글: 1.5 토큰/글자
-        - 영문: 0.25 토큰/단어
-        """
-        # 한글 문자 수
-        korean_chars = len(re.findall(r'[가-힣]', text))
-        # 영문 단어 수
-        english_words = len(re.findall(r'\b[a-zA-Z]+\b', text))
-        # 기타 문자
-        other_chars = len(text) - korean_chars - len(re.findall(r'[a-zA-Z\s]', text))
-        
-        estimated_tokens = int(
-            korean_chars * 1.5 + 
-            english_words * 0.25 + 
-            other_chars * 0.5
-        )
-        
-        return max(estimated_tokens, len(text) // 4)  # 최소값 보정
-    
-    @staticmethod
-    def split_by_paragraphs(text: str) -> List[str]:
-        """문단 단위로 분할"""
-        # 줄바꿈 기준 분할
-        paragraphs = re.split(r'\n\s*\n', text)
-        
-        # 빈 문단 제거 및 정리
-        paragraphs = [p.strip() for p in paragraphs if p.strip()]
-        
-        return paragraphs
-    
-    @staticmethod
-    def chunk_text(
-        text: str, 
-        section: str = 'general',
-        title: Optional[str] = None,
-        source_url: str = '',
-        crawl_depth: int = 0
-    ) -> List[Chunk]:
-        """
-        텍스트를 청크로 분할
-        - 문단 기준으로 200-400자 청크 생성
-        - 너무 짧으면 병합, 너무 길면 분할
-        """
-        chunks = []
-        paragraphs = TextChunker.split_by_paragraphs(text)
-        
-        current_chunk_text = ""
-        current_heading = title
-        
-        for para in paragraphs:
-            # 헤딩 감지
-            if TextChunker._is_heading(para):
-                # 기존 청크 저장
-                if current_chunk_text and len(current_chunk_text) >= TextChunker.MIN_CHUNK_SIZE:
-                    chunks.append(TextChunker._create_chunk(
-                        current_chunk_text, 
-                        section, 
-                        current_heading,
-                        source_url,
-                        crawl_depth
-                    ))
-                    current_chunk_text = ""
-                
-                current_heading = para
-                continue
-            
-            # 현재 청크에 추가
-            if current_chunk_text:
-                current_chunk_text += "\n\n" + para
-            else:
-                current_chunk_text = para
-            
-            # 최대 크기 초과 시 저장
-            if len(current_chunk_text) >= TextChunker.MAX_CHUNK_SIZE:
-                chunks.append(TextChunker._create_chunk(
-                    current_chunk_text,
-                    section,
-                    current_heading,
-                    source_url,
-                    crawl_depth
-                ))
-                
-                # 오버랩 유지
-                overlap_text = current_chunk_text[-TextChunker.OVERLAP_SIZE:]
-                current_chunk_text = overlap_text
-        
-        # 마지막 청크 처리
-        if current_chunk_text and len(current_chunk_text) >= TextChunker.MIN_CHUNK_SIZE:
-            chunks.append(TextChunker._create_chunk(
-                current_chunk_text,
-                section,
-                current_heading,
-                source_url,
-                crawl_depth
-            ))
-        
-        return chunks
-    
-    @staticmethod
-    def _is_heading(text: str) -> bool:
-        """헤딩 여부 판단"""
-        text = text.strip()
-        
-        # 너무 길면 헤딩 아님
-        if len(text) > 100:
-            return False
-        
-        # 헤딩 패턴
-        heading_patterns = [
-            r'^[IVX]+\.',  # 로마 숫자
-            r'^\d+\.',      # 숫자
-            r'^[A-Z][a-z]+:',  # 대문자 시작 + 콜론
-            r'^[가-힣]+:',     # 한글 + 콜론
-        ]
-        
-        return any(re.match(pattern, text) for pattern in heading_patterns)
-    
-    @staticmethod
-    def _create_chunk(
-        text: str, 
-        section: str,
-        title: Optional[str],
-        source_url: str,
-        crawl_depth: int
-    ) -> Chunk:
-        """청크 객체 생성"""
-        cleaned_text = TextChunker._clean_text(text)
-        
-        return Chunk(
-            text=cleaned_text,
-            title=title,
-            section=section,
-            char_count=len(cleaned_text),
-            token_count=TextChunker.estimate_tokens(cleaned_text),
-            source_url=source_url,
-            crawl_depth=crawl_depth
-        )
-    
-    @staticmethod
-    def _clean_text(text: str) -> str:
-        """텍스트 정리"""
-        # 과도한 공백 제거
-        text = re.sub(r'\s+', ' ', text)
-        
-        # 특수문자 정규화
-        text = unicodedata.normalize('NFKC', text)
-        
-        # 불필요한 제목 번호 제거 (선택적)
-        # text = re.sub(r'^\d+\.\s+', '', text)
-        
-        return text.strip()
+
 
 
 class DocumentProcessor:
@@ -708,19 +559,20 @@ class DocumentProcessor:
         3. 청킹
         """
         # 1. 본문 추출
-        soup, main_text = self.extractor.extract_main_content(html)
+        soup, main_text = ContentExtractor.extract_main_content(html)
         
         if not main_text or len(main_text) < 100:
             return []
         
         # 2. 페이지 제목 추출
         title = None
-        title_tag = soup.find('h1')
-        if title_tag:
-            title = title_tag.get_text(strip=True)
+        if soup is not None:
+            title_tag = soup.find('h1')
+            if title_tag:
+                title = title_tag.get_text(strip=True)
         
         # 3. 섹션 식별
-        section = self.extractor.identify_section(main_text, url)
+        section = ContentExtractor.identify_section(main_text, url)
         
         # 4. 청킹
         chunks = self.chunker.chunk_text(

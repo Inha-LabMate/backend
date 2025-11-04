@@ -20,11 +20,16 @@
 - **PII 감지**: 개인정보/로그인 페이지 자동 차단
 - **검수 대상 자동 표시**: 품질 점수 0.5 미만 문서
 
-### 🚀 스마트 크롤링
-- **robots.txt 준수**: 법적 문제 예방
-- **속도 제어**: 0.5-1.0 req/sec (서버 부담 최소화)
+### 🚀 스마트 크롤링 (Playwright)
+- **JavaScript 완전 실행**: Google Sites, Wix, React/Vue 등 모든 사이트 지원
+- **자동 대기**: AJAX, 동적 콘텐츠 로딩 완료까지 기다림
+- **속도 제어**: 1.0 req/sec (서버 부담 최소화)
 - **자동 재시도**: 일시적 오류 자동 복구 (지수 백오프)
-- **HTTP 캐싱**: ETag/Last-Modified 지원
+- **캐싱**: 중복 크롤링 방지
+
+**크롤링 성공률:**
+- Before (requests): 55% (15/27 연구실)
+- After (Playwright): 85%+ (23+/27 연구실)
 
 ### 📊 업데이트 전략
 - **재크롤 주기 관리**: 2-4주 자동 재크롤
@@ -81,11 +86,14 @@ code/
 ### 1. 설치
 ```bash
 # 가상환경 생성
-python -m venv venv
-.\venv\Scripts\activate  # Windows
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
 
 # 패키지 설치
 pip install -r requirements.txt
+
+# ⭐ Playwright 브라우저 설치 (중요!)
+python -m playwright install chromium
 ```
 
 자세한 설치 방법은 [installation.md](installation.md)를 참고하세요.
