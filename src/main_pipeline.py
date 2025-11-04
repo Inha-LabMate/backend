@@ -742,9 +742,25 @@ def main():
         print("❌ PostgreSQL 모드는 주석을 해제하고 설정을 입력하세요")
         return
     
-    # 크롤링 실행
-    url = "https://inhaece.co.kr/page/labs05"
-    df_result = orchestrator.crawl_from_url(url)
+    # 크롤링 실행 - 4개 학과 통합
+    urls = [
+        "https://inhaece.co.kr/page/labs01",  # 컴퓨터공학과
+        "https://inhaece.co.kr/page/labs03",  # 정보통신공학과
+        "https://inhaece.co.kr/page/labs05",  # 전기공학과
+        "https://inhaece.co.kr/page/labs06",  # 인공지능공학과
+    ]
+    
+    all_results = []
+    for i, url in enumerate(urls):
+        print(f"\n{'='*80}")
+        print(f"학과 [{i+1}/{len(urls)}]: {url}")
+        print(f"{'='*80}\n")
+        
+        df_result = orchestrator.crawl_from_url(url)
+        all_results.append(df_result)
+    
+    # 모든 결과 병합
+    df_result = pd.concat(all_results, ignore_index=True)
     
     # 결과 저장
     print("\n" + "="*80)

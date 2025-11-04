@@ -204,25 +204,70 @@ class ContentExtractor:
         # 2. main 태그 우선 탐색
         main_content = soup.find('main')
         if main_content:
-            return main_content, main_content.get_text(separator=' ', strip=True)
+            return main_content, ContentExtractor._extract_clean_text(main_content)
         
         # 3. article 태그 탐색
         article = soup.find('article')
         if article:
-            return article, article.get_text(separator=' ', strip=True)
+            return article, ContentExtractor._extract_clean_text(article)
         
         # 4. content 관련 div 탐색
         for content_class in ['content', 'main-content', 'page-content', 'post-content']:
             content_div = soup.find('div', class_=re.compile(content_class, re.I))
             if content_div:
-                return content_div, content_div.get_text(separator=' ', strip=True)
+                return content_div, ContentExtractor._extract_clean_text(content_div)
         
         # 5. body 전체 (최후)
         body = soup.find('body')
         if body:
-            return body, body.get_text(separator=' ', strip=True)
+            return body, ContentExtractor._extract_clean_text(body)
         
-        return soup, soup.get_text(separator=' ', strip=True)
+        return soup, ContentExtractor._extract_clean_text(soup)
+    
+    @staticmethod
+    def _extract_clean_text(element) -> str:
+        """
+        BeautifulSoup 엘리먼트에서 깨끗한 텍스트 추출
+        
+        문제: get_text()는 공백/줄바꿈이 너무 많아서 청크 생성 실패
+        해결: 단락(p, div, h1-h6 등) 단위로 텍스트 추출 후 병합
+        """
+        text_parts = []
+        
+        # 의미있는 텍스트 태그들
+        content_tags = [
+            'p', 'div', 'span', 'article', 'section',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'li', 'td', 'th', 'blockquote', 'pre'
+        ]
+        
+        # 모든 텍스트 노드 재귀 탐색
+        for tag in element.find_all(content_tags):
+            # 직접 자식 텍스트만 (중첩 방지)
+            text = tag.get_text(separator=' ', strip=True)
+            if text and len(text) > 10:  # 10자 이상만
+                # 연속 공백 제거
+                text = re.sub(r'\s+', ' ', text)
+                text_parts.append(text)
+        
+        # 텍스트가 없으면 전체 텍스트 시도
+        if not text_parts:
+            text = element.get_text(separator=' ', strip=True)
+            text = re.sub(r'\s+', ' ', text)
+            return text
+        
+        # 중복 제거 (같은 텍스트가 중첩되어 나오는 경우)
+        unique_parts = []
+        seen = set()
+        for part in text_parts:
+            # 텍스트 정규화 (소문자 + 공백 제거)
+            normalized = part.lower().replace(' ', '')
+            if normalized not in seen:
+                seen.add(normalized)
+                unique_parts.append(part)
+        
+        # 문단 구분하여 병합
+        return '\n\n'.join(unique_parts)
     
     @staticmethod
     def identify_section(text: str, url: str = '') -> str:
