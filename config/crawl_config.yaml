@@ -1,0 +1,33 @@
+# 크롤링 설정
+crawling:
+  # Playwright 설정
+  headless: true
+  timeout: 30000  # 밀리초
+  wait_for_network_idle: true
+  
+  # 속도 제어
+  delay: 1.0  # 요청 간 대기 시간 (초)
+  max_retries: 3  # 최대 재시도 횟수
+  
+  # 크롤링 범위
+  max_pages_per_lab: 5  # 연구실당 최대 페이지 수
+  
+  # User-Agent
+  user_agent: "INHA-LabSearch-Bot/1.0 (Educational; Contact: contact@inha.ac.kr)"
+  
+  # 캐시
+  cache_enabled: true
+  cache_dir: "./data/crawl_cache"
+  cache_expiry_hours: 168  # 7일
+  
+# 품질 필터
+quality:
+  min_text_length: 100  # 최소 텍스트 길이 (문자)
+  min_quality_score: 0.3  # 최소 품질 점수 (0-1)
+  
+# 대상 URL
+target_urls:
+  - "https://inhaece.co.kr/page/labs01"  # 전기전자공학전공
+  - "https://inhaece.co.kr/page/labs03"  # 컴퓨터공학전공
+  - "https://inhaece.co.kr/page/labs05"  # 인공지능전공
+  - "https://inhaece.co.kr/page/labs06"  # 미래자동차공학전공

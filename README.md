@@ -16,14 +16,12 @@ python -m playwright install chromium
 
 ### 2. 크롤링
 ```bash
-cd src
-python main_pipeline.py
+python scripts/run_crawl.py
 ```
 
 ### 3. 검색
 ```bash
-cd src
-python search_local.py
+python scripts/run_search.py
 ```
 
 ## 📚 상세 문서
@@ -40,11 +38,31 @@ python search_local.py
 
 ```
 code/
-├── src/              # 소스 코드
-├── crawl_data/       # 최종 결과 (프로덕션)
-├── temp/             # 임시/테스트 데이터
-├── data/             # 버전 관리용 데이터
-├── docs/             # 📚 문서
+├── src/                    # 소스 코드
+│   ├── core/              # 핵심 크롤링 & 임베딩
+│   ├── processing/        # 텍스트 처리
+│   ├── storage/           # 데이터 저장
+│   ├── search/            # 검색 관련
+│   └── utils/             # 공통 유틸
+│
+├── data/                  # 데이터 저장소
+│   ├── crawl_data/       # 크롤링 결과 (프로덕션)
+│   ├── crawl_cache/      # 크롤링 캐시
+│   ├── temp/             # 임시 데이터
+│   └── backups/          # 백업
+│
+├── scripts/               # 실행 스크립트
+│   ├── run_crawl.py      # 크롤링 실행
+│   ├── run_search.py     # 검색 실행
+│   └── run_similarity.py # 유사도 계산 (향후)
+│
+├── config/                # 설정 파일
+│   ├── crawl_config.yaml
+│   ├── embedding_config.yaml
+│   └── similarity_config.yaml
+│
+├── tests/                 # 테스트
+├── docs/                  # 문서
 └── requirements.txt
 ```
 

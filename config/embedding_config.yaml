@@ -1,0 +1,39 @@
+# 임베딩 설정
+embedding:
+  # 모델 선택
+  model_name: "multilingual-e5-large"  # multilingual-mpnet, multilingual-e5-large, multilingual-e5-base, ko-sbert-multitask
+  
+  # 디바이스
+  device: "cpu"  # cpu 또는 cuda
+  
+  # 배치 처리
+  batch_size: 32
+  
+  # 정규화
+  normalize: true  # L2 정규화 (코사인 유사도용)
+  
+  # 캐싱
+  cache_enabled: true
+  cache_dir: "./data/embedding_cache"
+
+# 지원 모델 정보
+supported_models:
+  multilingual-mpnet:
+    full_name: "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
+    dimension: 768
+    description: "다국어 지원, 빠름"
+    
+  multilingual-e5-large:
+    full_name: "intfloat/multilingual-e5-large"
+    dimension: 1024
+    description: "고품질, 느림 (현재 기본값)"
+    
+  multilingual-e5-base:
+    full_name: "intfloat/multilingual-e5-base"
+    dimension: 768
+    description: "균형잡힌 다국어 모델"
+    
+  ko-sbert-multitask:
+    full_name: "jhgan/ko-sbert-multitask"
+    dimension: 768
+    description: "한국어 특화"

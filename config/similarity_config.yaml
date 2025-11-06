@@ -1,0 +1,47 @@
+# 유사도 측정 설정 (향후 구현)
+similarity:
+  # 1단계: 후보군 생성
+  candidate_generation:
+    method: "vector_search"  # vector_search, keyword_search, hybrid
+    top_k: 50  # 상위 K개 후보
+    
+  # 2단계: 재랭킹
+  reranking:
+    enabled: true
+    
+    # 가중치 (합 = 1.0)
+    weights:
+      vector_similarity: 0.5   # 벡터 유사도
+      keyword_match: 0.2       # 키워드 매칭
+      quality_score: 0.2       # 품질 점수
+      freshness: 0.1           # 최신성
+    
+  # 문장형 유사도 (Sentence Similarity)
+  sentence:
+    model: "multilingual-e5-large"
+    metric: "cosine"  # cosine, euclidean, dot_product
+    
+  # 키워드형 유사도 (Keyword Similarity)
+  keyword:
+    method: "tfidf"  # jaccard, tfidf, bm25
+    min_term_freq: 2
+    
+  # 정량형 유사도 (Numeric Similarity)
+  numeric:
+    gpa_weight: 0.4
+    language_weight: 0.3
+    experience_weight: 0.3
+    
+# 필터링
+filters:
+  min_score: 0.3  # 최소 유사도 점수
+  max_results: 10  # 최대 결과 개수
+  
+  # 섹션 가중치
+  section_weights:
+    research: 1.0
+    publication: 0.8
+    project: 0.7
+    people: 0.5
+    about: 0.6
+    general: 0.3
