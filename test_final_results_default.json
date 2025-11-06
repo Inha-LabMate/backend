@@ -1,0 +1,137 @@
+[
+  {
+    "lab_id": "65",
+    "lab_name": "컴퓨터 구조 및 메모리 시스템 연구실",
+    "final_score": 0.6515,
+    "sentence_score": 0.7194,
+    "keyword_score": 0.325,
+    "numeric_score": 1.0,
+    "details": {
+      "sentence": {
+        "intro1": 0.7978,
+        "intro2": 0.5643,
+        "intro3": 0.7813,
+        "portfolio": 0.7308
+      },
+      "keyword": {
+        "major": 0.0,
+        "certification": 0.5,
+        "award": 0.5,
+        "tech_stack": 0.5
+      },
+      "numeric": {
+        "language": 1.0,
+        "proficiency": 1.0,
+        "gpa": 1.0
+      }
+    }
+  },
+  {
+    "lab_id": "47",
+    "lab_name": "컴퓨터네트워크 연구실",
+    "final_score": 0.6515,
+    "sentence_score": 0.7194,
+    "keyword_score": 0.325,
+    "numeric_score": 1.0,
+    "details": {
+      "sentence": {
+        "intro1": 0.7978,
+        "intro2": 0.5643,
+        "intro3": 0.7813,
+        "portfolio": 0.7308
+      },
+      "keyword": {
+        "major": 0.0,
+        "certification": 0.5,
+        "award": 0.5,
+        "tech_stack": 0.5
+      },
+      "numeric": {
+        "language": 1.0,
+        "proficiency": 1.0,
+        "gpa": 1.0
+      }
+    }
+  },
+  {
+    "lab_id": "73",
+    "lab_name": "생성 컴퓨팅 연구실",
+    "final_score": 0.6515,
+    "sentence_score": 0.7194,
+    "keyword_score": 0.325,
+    "numeric_score": 1.0,
+    "details": {
+      "sentence": {
+        "intro1": 0.7978,
+        "intro2": 0.5643,
+        "intro3": 0.7813,
+        "portfolio": 0.7308
+      },
+      "keyword": {
+        "major": 0.0,
+        "certification": 0.5,
+        "award": 0.5,
+        "tech_stack": 0.5
+      },
+      "numeric": {
+        "language": 1.0,
+        "proficiency": 1.0,
+        "gpa": 1.0
+      }
+    }
+  },
+  {
+    "lab_id": "74",
+    "lab_name": "로봇 지능 학습 및 시스템 연구실",
+    "final_score": 0.6515,
+    "sentence_score": 0.7194,
+    "keyword_score": 0.325,
+    "numeric_score": 1.0,
+    "details": {
+      "sentence": {
+        "intro1": 0.7978,
+        "intro2": 0.5643,
+        "intro3": 0.7813,
+        "portfolio": 0.7308
+      },
+      "keyword": {
+        "major": 0.0,
+        "certification": 0.5,
+        "award": 0.5,
+        "tech_stack": 0.5
+      },
+      "numeric": {
+        "language": 1.0,
+        "proficiency": 1.0,
+        "gpa": 1.0
+      }
+    }
+  },
+  {
+    "lab_id": "49",
+    "lab_name": "컴퓨터 지능 보안 연구실",
+    "final_score": 0.6515,
+    "sentence_score": 0.7194,
+    "keyword_score": 0.325,
+    "numeric_score": 1.0,
+    "details": {
+      "sentence": {
+        "intro1": 0.7978,
+        "intro2": 0.5643,
+        "intro3": 0.7813,
+        "portfolio": 0.7308
+      },
+      "keyword": {
+        "major": 0.0,
+        "certification": 0.5,
+        "award": 0.5,
+        "tech_stack": 0.5
+      },
+      "numeric": {
+        "language": 1.0,
+        "proficiency": 1.0,
+        "gpa": 1.0
+      }
+    }
+  }
+]

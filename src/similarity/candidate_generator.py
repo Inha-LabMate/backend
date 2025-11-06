@@ -154,6 +154,12 @@ class Lab:
     description: str
     homepage: str = ""
     location: str = ""
+    department: str = ""  # 학과
+    sections: Dict[str, str] = None  # 섹션별 텍스트 (재랭킹용)
+    
+    def __post_init__(self):
+        if self.sections is None:
+            self.sections = {}
     
     def get_search_text(self) -> str:
         """name + description만 사용"""

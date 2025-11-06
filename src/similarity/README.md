@@ -171,19 +171,256 @@ index.add(lab_embeddings)
 distances, indices = index.search(query_embedding, k=10)
 ```
 
-## 🔜 다음 단계
+## 🎯 2단계: 정밀 재랭킹 (Re-ranking)
 
-이 후보군은 **2단계: 순위 재조정(Re-ranking)**으로 전달됩니다.
+1단계에서 선정된 10~20개 후보 연구실에 대해 **모든 학생 프로필 항목**을 활용하여 정밀한 최종 점수를 계산합니다.
 
-2단계에서는:
-- 자기소개서 (3가지)
-- 포트폴리오
-- 전공/복수전공
-- 자격증, 수상경력
-- 기술 스택
-- 어학 점수, 학점
+### 📊 재랭킹 점수 구성 (기본 설정)
 
-등 **모든 항목을 동원**하여 정밀한 최종 점수를 계산합니다.
+```
+최종 점수 = 문장형(60%) + 키워드형(30%) + 정량형(10%)
+```
+
+#### 1️⃣ 문장형 유사도 (60%)
+**자유 서술형 텍스트의 의미적 유사도**
+
+| 항목 | 가중치 | 모델 | 설명 |
+|-----|--------|------|------|
+| 자기소개1 (관심 연구) | 30% | E5-large + Cosine | 연구 관심사 vs 연구실 연구 분야 |
+| 자기소개2 (기술 경험) | 25% | E5 + Keyword Overlap | 기술 경험 vs 연구실 방법론/프로젝트 |
+| 자기소개3 (연구 목표) | 20% | E5-large + Cosine | 연구 목표 vs 연구실 비전 |
+| 포트폴리오 | 25% | E5 Mean-pooling | 전체 경력 vs 연구실 전체 정보 |
+
+**알고리즘:**
+- **E5/SBERT**: 문장 임베딩 (1024차원 벡터)
+- **Cosine Similarity**: 벡터 간 유사도 계산
+- **Keyword Overlap**: 핵심 키워드 중복도 (자기소개2 전용)
+
+**구현 파일:**
+- `sentence_similarity.py`
+  - `SentenceSimilarity`: 기본 E5 코사인 유사도
+  - `SentenceSimilarityWithKeyword`: 키워드 오버랩 결합
+  - `PortfolioSimilarity`: Mean-pooling 코사인
+
+#### 2️⃣ 키워드형 유사도 (30%)
+**라벨/카테고리 데이터의 정확한 매칭**
+
+| 항목 | 가중치 | 알고리즘 | 설명 |
+|-----|--------|---------|------|
+| 전공 | 35% | Rule-based | 동일=1.0, 유사=0.8, 관련=0.5 |
+| 자격증 | 25% | Weighted Jaccard | 기사>산업기사>민간자격 |
+| 수상경력 | 20% | TF-IDF Cosine / Jaccard | 수상 내용 유사도 |
+| 기술 스택 | 20% | Jaccard + E5-small | 기술 키워드 + 임베딩 하이브리드 |
+
+**알고리즘:**
+- **Rule-based**: 사전 정의된 규칙 (전공 계열 매칭)
+- **Jaccard**: 집합 교집합/합집합 비율
+- **TF-IDF**: 문서 중요도 기반 키워드 추출
+- **Weighted Jaccard**: 항목별 가중치 부여
+
+**구현 파일:**
+- `keyword_similarity.py`
+  - `MajorSimilarity`: 전공 Rule-based
+  - `CertificationSimilarity`: 자격증 Weighted Jaccard
+  - `AwardSimilarity`: 수상경력 TF-IDF/Jaccard
+  - `TechStackSimilarity`: 기술 Jaccard + E5
+
+#### 3️⃣ 정량형 유사도 (10%)
+**수치/범주 데이터의 거리 기반 유사도**
+
+| 항목 | 가중치 | 알고리즘 | 설명 |
+|-----|--------|---------|------|
+| 어학 점수 (TOEIC/OPIc) | 30% | Min-Max + Threshold | 기준 이상=1.0, 선형 감소 |
+| 구사능력 (상/중/하) | 30% | Ordinal Similarity | 레벨 차이에 따른 점수 |
+| 학점 (GPA) | 40% | Distance-based | 기대 학점 대비 거리 |
+
+**알고리즘:**
+- **Min-Max 정규화**: (값 - 최소) / (최대 - 최소)
+- **Threshold Rule**: 기준 이상 만점, 이하 선형 감소
+- **Ordinal Similarity**: 순서형 데이터 레벨 차이 계산
+- **Distance-based**: 기대값 대비 거리 (학점 gap)
+
+**구현 파일:**
+- `numeric_similarity.py`
+  - `LanguageScoreSimilarity`: TOEIC/OPIc Min-Max
+  - `LanguageProficiencySimilarity`: 구사능력 Ordinal
+  - `GPASimilarity`: 학점 거리 기반
+
+### ⚙️ 설정 프로파일
+
+**1. 기본 설정 (Default)**
+```python
+문장형: 60% (균형)
+키워드형: 30%
+정량형: 10%
+```
+- 가장 균형잡힌 설정
+- 연구 적합도와 실무 능력 모두 고려
+
+**2. 연구 중심 (Research-focused)**
+```python
+문장형: 50% (연구 관심 40% ↑)
+키워드형: 30%
+정량형: 20%
+```
+- 자기소개1 (관심 연구 분야) 가중치 증가
+- 학업 성취도 중시
+
+**3. 기술 중심 (Skill-focused)**
+```python
+문장형: 30%
+키워드형: 45% (기술 스택 35% ↑)
+정량형: 25%
+```
+- 기술 스택 매칭 강화
+- 실무 프로젝트 경험 중시
+
+**4. 학업 중심 (Academic-focused)**
+```python
+문장형: 30%
+키워드형: 30%
+정량형: 40% (학점 50% ↑)
+```
+- 학점, 어학 점수 중시
+- 정량적 성취 강조
+
+### 📦 파일 구조
+
+```
+src/similarity/
+├── base.py                    # 추상 클래스 & 공통 인터페이스
+├── config.py                  # 설정 및 가중치 관리 (4개 프로파일)
+│
+├── sentence_similarity.py     # 문장형 유사도 (E5, SBERT, Cosine)
+├── keyword_similarity.py      # 키워드형 유사도 (Jaccard, TF-IDF, Rule)
+├── numeric_similarity.py      # 정량형 유사도 (Min-Max, Ordinal)
+│
+├── candidate_generator.py     # 1단계: 후보군 생성 (BM25 + E5-small)
+├── scorer.py                  # 2단계: 통합 재랭킹 스코어러
+├── utils.py                   # 공통 유틸리티
+│
+├── __init__.py               # 모듈 패키지
+├── README.md                  # 이 파일
+└── test_full_pipeline.py     # 통합 테스트
+```
+
+### 🚀 사용법
+
+#### 1단계: 후보군 생성
+```python
+from similarity import CandidateGenerator, Student
+
+# 학생 정보 (간단)
+student = Student(
+    research_interests="컴퓨터 비전, 딥러닝, 객체 탐지"
+)
+
+# 후보군 생성기 초기화
+generator = CandidateGenerator()
+
+# 후보군 생성 (10~20개)
+results = generator.get_candidates_with_scores(student, final_top_k=15)
+candidates = [info['lab'] for info in results.values()]
+```
+
+#### 2단계: 정밀 재랭킹
+```python
+from similarity import RerankingScorer, StudentProfile, DEFAULT_CONFIG
+
+# 학생 상세 프로필
+student_profile = StudentProfile(
+    # 문장형
+    intro1="컴퓨터 비전과 딥러닝을 활용한 이미지 인식 연구에 관심이 있습니다",
+    intro2="Python, PyTorch를 사용한 객체 탐지 프로젝트 경험이 있습니다",
+    intro3="Vision Transformer 연구를 통해 실시간 영상 분석 기술을 개발하고 싶습니다",
+    portfolio="YOLO v5 객체 탐지, GAN 이미지 생성, Transformer 연구 등 3년 경험",
+    
+    # 키워드형
+    major="컴퓨터공학",
+    certifications="정보처리기사, 빅데이터분석기사",
+    awards="AI 해커톤 우수상",
+    tech_stack="Python, PyTorch, TensorFlow, OpenCV",
+    
+    # 정량형
+    toeic_score="850",
+    english_proficiency="중상",
+    gpa="4.0"
+)
+
+# 스코어러 초기화 (기본 설정)
+scorer = RerankingScorer(DEFAULT_CONFIG)
+
+# 재랭킹 수행
+final_results = scorer.rerank_candidates(student_profile, candidates, top_k=5)
+
+# 결과 확인
+for i, result in enumerate(final_results, 1):
+    print(f"{i}위. {result.lab_name}")
+    print(f"   최종 점수: {result.final_score:.4f}")
+    print(f"   - 문장형: {result.sentence_score:.4f}")
+    print(f"   - 키워드형: {result.keyword_score:.4f}")
+    print(f"   - 정량형: {result.numeric_score:.4f}")
+```
+
+#### 설정 변경
+```python
+from similarity import RESEARCH_CONFIG, SKILL_CONFIG
+
+# 연구 중심 설정
+scorer_research = RerankingScorer(RESEARCH_CONFIG)
+results = scorer_research.rerank_candidates(student_profile, candidates)
+
+# 기술 중심 설정
+scorer_skill = RerankingScorer(SKILL_CONFIG)
+results = scorer_skill.rerank_candidates(student_profile, candidates)
+```
+
+### 🧪 테스트
+
+```bash
+# 전체 파이프라인 테스트
+cd code
+python test_full_pipeline.py
+
+# 개별 모듈 테스트
+python test_scorer.py
+
+# Scorer 모듈만 테스트
+cd src/similarity
+python -m pytest test_*.py  # pytest 사용시
+```
+
+### 📊 결과 예시
+
+```json
+{
+  "lab_id": "73",
+  "lab_name": "생성 컴퓨팅 연구실",
+  "final_score": 0.8215,
+  "sentence_score": 0.8318,
+  "keyword_score": 0.6822,
+  "numeric_score": 1.0000,
+  "details": {
+    "sentence": {
+      "intro1": 0.8808,  // 관심 연구 매칭 우수
+      "intro2": 0.6405,
+      "intro3": 0.9159,  // 연구 목표 매칭 우수
+      "portfolio": 0.8969
+    },
+    "keyword": {
+      "major": 1.0000,   // 전공 정확히 일치
+      "certification": 0.5000,
+      "award": 0.5000,
+      "tech_stack": 0.5358
+    },
+    "numeric": {
+      "language": 1.0000,    // TOEIC 기준 이상
+      "proficiency": 1.0000,  // 구사능력 충족
+      "gpa": 1.0000          // 학점 우수
+    }
+  }
+}
+```
 
 ## 📝 참고사항
 

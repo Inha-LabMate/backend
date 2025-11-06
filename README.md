@@ -33,6 +33,7 @@ python scripts/run_search.py
 - **[docs/crawling.md](docs/crawling.md)** - 🕷️ 크롤링 사용법
 - **[docs/search.md](docs/search.md)** - 🔍 검색 사용법
 - **[docs/architecture.md](docs/architecture.md)** - 🏗️ 시스템 구조
+- **[docs/similarity.md](docs/similarity.md)** - 🎯 추천 시스템 알고리즘
 
 ## 📁 프로젝트 구조
 
@@ -43,6 +44,14 @@ code/
 │   ├── processing/        # 텍스트 처리
 │   ├── storage/           # 데이터 저장
 │   ├── search/            # 검색 관련
+│   ├── similarity/        # 추천 시스템 (NEW!)
+│   │   ├── candidate_generator.py  # 1단계: 후보군 생성
+│   │   ├── scorer.py               # 2단계: 재랭킹
+│   │   ├── sentence_similarity.py  # 문장형 유사도
+│   │   ├── keyword_similarity.py   # 키워드형 유사도
+│   │   ├── numeric_similarity.py   # 정량형 유사도
+│   │   ├── config.py               # 설정 (기본/연구/기술/학업 중심)
+│   │   └── README.md               # 상세 문서
 │   └── utils/             # 공통 유틸
 │
 ├── data/                  # 데이터 저장소
@@ -72,12 +81,15 @@ code/
 - 🚀 **스마트 크롤링 (Playwright)**: JavaScript 완전 실행, Google Sites/Wix 지원
 - 📄 **고급 추출**: PDF, 표 구조 보존
 - 🔍 **의미 기반 검색**: intfloat/multilingual-e5-large (1024차원 벡터)
+- 🎯 **2단계 추천 시스템**:
+  - 1단계: BM25 + E5-small 하이브리드 후보군 생성 (10~20개)
+  - 2단계: 문장형(60%) + 키워드형(30%) + 정량형(10%) 정밀 재랭킹
 
 ## 🎯 사용 시나리오
 
-- **학생**: 관심 분야 연구실 찾기
+- **학생**: 관심 분야 연구실 찾기 + 맞춤형 추천
 - **관리자**: 연구실 정보 최신화
-- **개발자**: 커스텀 검색 로직 추가
+- **개발자**: 커스텀 검색/추천 로직 추가
 
 ## 📄 라이선스
 
