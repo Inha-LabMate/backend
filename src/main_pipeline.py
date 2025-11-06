@@ -721,7 +721,7 @@ def main():
     if USE_LOCAL:
         # 로컬 저장소 사용
         orchestrator = CrawlOrchestrator(
-            embedding_model='multilingual-mpnet',
+            embedding_model='multilingual-e5-large',
             device='cpu',
             local_data_dir='./crawl_data'
         )
@@ -744,10 +744,10 @@ def main():
     
     # 크롤링 실행 - 4개 학과 통합
     urls = [
-        "https://inhaece.co.kr/page/labs01",  # 컴퓨터공학과
-        "https://inhaece.co.kr/page/labs03",  # 정보통신공학과
-        "https://inhaece.co.kr/page/labs05",  # 전기공학과
-        "https://inhaece.co.kr/page/labs06",  # 인공지능공학과
+        "https://inhaece.co.kr/page/labs01",  # 전기전자공학전공
+        "https://inhaece.co.kr/page/labs03",  # 컴퓨터공학전공
+        "https://inhaece.co.kr/page/labs05",  # 인공지능전공
+        "https://inhaece.co.kr/page/labs06",  # 미래자동차공학전공
     ]
     
     all_results = []

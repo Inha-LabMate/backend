@@ -98,7 +98,7 @@ class EmbeddingConfig:
     }
     
     # 기본 설정
-    DEFAULT_MODEL = 'multilingual-mpnet'
+    DEFAULT_MODEL = 'multilingual-e5-large'
     DEFAULT_BATCH_SIZE = 32
     NORMALIZE = True  # L2 정규화 (코사인 유사도용)
 
@@ -108,7 +108,7 @@ class EmbeddingModel:
     
     def __init__(
         self, 
-        model_name: str = 'multilingual-mpnet',
+        model_name: str = 'multilingual-e5-large',
         device: str = 'cpu',
         normalize: bool = True,
         version: int = 1

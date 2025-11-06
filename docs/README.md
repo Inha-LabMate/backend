@@ -28,8 +28,15 @@
 - **캐싱**: 중복 크롤링 방지
 
 **크롤링 성공률:**
-- Before (requests): 55% (15/27 연구실)
-- After (Playwright): 85%+ (23+/27 연구실)
+- Before (requests): 55% (JavaScript 사이트 실패)
+- After (Playwright): 거의 100% (Google Sites, Wix 등 모두 지원)
+
+**크롤링 대상:**
+- 4개 학과 통합 크롤링
+  - `https://inhaece.co.kr/page/labs01`
+  - `https://inhaece.co.kr/page/labs03`
+  - `https://inhaece.co.kr/page/labs05`
+  - `https://inhaece.co.kr/page/labs06`
 
 ### 📊 업데이트 전략
 - **재크롤 주기 관리**: 2-4주 자동 재크롤
@@ -157,9 +164,9 @@ python search_local.py
 ## 🔧 기술 스택
 
 - **언어**: Python 3.8+
-- **임베딩**: sentence-transformers (multilingual-mpnet)
+- **임베딩**: sentence-transformers (intfloat/multilingual-e5-large, 1024차원)
 - **벡터 검색**: PostgreSQL + pgvector (선택) 또는 로컬 JSON
-- **크롤링**: requests, BeautifulSoup4
+- **크롤링**: Playwright (JavaScript 렌더링), BeautifulSoup4
 - **API**: FastAPI (선택)
 
 ## 📊 데이터 저장 방식

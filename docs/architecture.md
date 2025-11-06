@@ -482,10 +482,15 @@ SUPPORTED_MODELS = {
         'dimension': 768,
         'description': '다국어 지원, 빠름'
     },
-    'multilingual-e5-large': {
+    'multilingual-e5-large': {  # ⭐ 현재 기본 모델
         'name': 'intfloat/multilingual-e5-large',
         'dimension': 1024,
         'description': '고품질, 느림'
+    },
+    'multilingual-e5-base': {
+        'name': 'intfloat/multilingual-e5-base',
+        'dimension': 768,
+        'description': '균형잡힌 다국어 모델'
     },
     'ko-sbert-multitask': {
         'name': 'jhgan/ko-sbert-multitask',
@@ -493,6 +498,11 @@ SUPPORTED_MODELS = {
         'description': '한국어 특화'
     }
 }
+```
+
+**기본 모델 설정:**
+```python
+DEFAULT_MODEL = 'multilingual-e5-large'  # 1024차원, 고성능
 ```
 
 ### 7. local_storage.py
@@ -639,7 +649,7 @@ CREATE TABLE lab_docs (
     source_url TEXT,
     crawl_depth INTEGER,
     md5 TEXT UNIQUE,
-    embedding vector(768),  -- pgvector
+    embedding vector(1024),  -- pgvector (multilingual-e5-large = 1024차원)
     emb_model TEXT,
     emb_ver INTEGER,
     created_at TIMESTAMP DEFAULT NOW()
@@ -778,7 +788,7 @@ SET hnsw.ef_search = 64;  -- 검색 품질 (높을수록 정확, 느림)
 -- PostgreSQL 함수
 CREATE OR REPLACE FUNCTION hybrid_search(
     query_text TEXT,
-    query_embedding vector(768),
+    query_embedding vector(1024),  -- multilingual-e5-large = 1024차원
     vec_weight REAL DEFAULT 0.7,
     kw_weight REAL DEFAULT 0.3,
     result_limit INTEGER DEFAULT 10

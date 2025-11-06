@@ -6,9 +6,12 @@
 
 ### 1. 설치
 ```bash
-python -m venv venv
-.\venv\Scripts\activate  # Windows
+python -m venv .venv
+.\.venv\Scripts\activate  # Windows
 pip install -r requirements.txt
+
+# ⭐ Playwright 브라우저 설치 (중요!)
+python -m playwright install chromium
 ```
 
 ### 2. 크롤링
@@ -48,9 +51,9 @@ code/
 ## ✨ 주요 기능
 
 - 🛡️ **품질 관리**: 자동 품질 점수 계산 및 PII 차단
-- 🚀 **스마트 크롤링**: robots.txt 준수, 속도 제어, 자동 재시도
+- 🚀 **스마트 크롤링 (Playwright)**: JavaScript 완전 실행, Google Sites/Wix 지원
 - 📄 **고급 추출**: PDF, 표 구조 보존
-- 🔍 **의미 기반 검색**: 벡터 검색으로 유사한 내용 자동 발견
+- 🔍 **의미 기반 검색**: intfloat/multilingual-e5-large (1024차원 벡터)
 
 ## 🎯 사용 시나리오
 
