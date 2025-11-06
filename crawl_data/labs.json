@@ -823,5 +823,126 @@
     "contact_email": "",
     "contact_phone": "032-860-9215",
     "description": "생물정보학, 약물정보학, 의학정보학, 그래프 딥러닝"
+  },
+  "76": {
+    "lab_id": 76,
+    "kor_name": "암호연구실",
+    "eng_name": "Cryptology Lab",
+    "professor": "이용우",
+    "homepage": "http://crypto.inha.ac.kr/",
+    "location": "하이테크센터 315호",
+    "contact_email": "",
+    "contact_phone": "032-860-7434",
+    "description": ""
+  },
+  "77": {
+    "lab_id": 77,
+    "kor_name": "멀티모달 인공지능 연구실",
+    "eng_name": "Multimodal AI Lab",
+    "professor": "이필현",
+    "homepage": "https://sites.google.com/view/mailab-inha/",
+    "location": "본관 516호",
+    "contact_email": "",
+    "contact_phone": "032-860-9216",
+    "description": "멀티모달 인공지능, 컴퓨터비전, 비디오 이해, 딥러닝"
+  },
+  "78": {
+    "lab_id": 78,
+    "kor_name": "의료인공지능연구실",
+    "eng_name": "Medical AI Lab",
+    "professor": "이현규",
+    "homepage": "https://hglee6.wixsite.com/inha-mai",
+    "location": "5동 201호",
+    "contact_email": "",
+    "contact_phone": "032-860-8194",
+    "description": ""
+  },
+  "79": {
+    "lab_id": 79,
+    "kor_name": "빅데이터 연구실",
+    "eng_name": "Big Data Lab",
+    "professor": "최동완",
+    "homepage": "http://bigdata.inha.ac.kr/",
+    "location": "하이테크센터 1413호",
+    "contact_email": "dchoi@inha.ac.kr",
+    "contact_phone": "",
+    "description": ""
+  },
+  "80": {
+    "lab_id": 80,
+    "kor_name": "반도체소자 연구실",
+    "eng_name": "Semiconductor Devices Lab",
+    "professor": "김형진",
+    "homepage": "https://sites.google.com/view/isdlab/home",
+    "location": "",
+    "contact_email": "",
+    "contact_phone": "",
+    "description": "CMOS Logic Devices, Memory Devices, Synaptic Devices and Neuromorphic System"
+  },
+  "81": {
+    "lab_id": 81,
+    "kor_name": "위성항법 연구실",
+    "eng_name": "Satellite Navigation Lab",
+    "professor": "박관동",
+    "homepage": "http://gps.inha.ac.kr/",
+    "location": "4호관 310호",
+    "contact_email": "",
+    "contact_phone": "032-873-4310",
+    "description": "자율주행용/유도무기용/정밀측량용 GNSS 개발, 과학기술용 GNSS 연구, KPS 한국형위성항법시스템 구축"
+  },
+  "82": {
+    "lab_id": 82,
+    "kor_name": "첨단수송 기계설계 및 제어 연구실",
+    "eng_name": "Advanced Vehicle Design & Control Lab",
+    "professor": "이철희",
+    "homepage": "http://avdclab.inha.ac.kr/",
+    "location": "2호관 380호",
+    "contact_email": "",
+    "contact_phone": "032-860-7311",
+    "description": "VPD & Optimization, Tribology(Friction/Wear/Lubrication), Smart System Design & Control, Smart Mobility"
+  },
+  "83": {
+    "lab_id": 83,
+    "kor_name": "동작 지능 연구실",
+    "eng_name": "Artemis lab",
+    "professor": "장준우",
+    "homepage": "https://artemis-inha.github.io/",
+    "location": "항공-309호",
+    "contact_email": "",
+    "contact_phone": "032-720-9087",
+    "description": "Intelligent Motion System, AI-driven modeling and control, Robotics"
+  },
+  "84": {
+    "lab_id": 84,
+    "kor_name": "고체역학 연구실",
+    "eng_name": "Advanced Modeling and Computational Aided Engineering Lab",
+    "professor": "조종두",
+    "homepage": "https://ismela2n374b.wixsite.com/website",
+    "location": "2호관(북) 374B호",
+    "contact_email": "",
+    "contact_phone": "032-860-7321",
+    "description": "재료역학(복합재료), 유한요소법, 전산응력해석, 열응력"
+  },
+  "85": {
+    "lab_id": 85,
+    "kor_name": "에코-스마트 파워 연구실",
+    "eng_name": "Eco-Smart Power Lab",
+    "professor": "주현철",
+    "homepage": "http://espl.inha.ac.kr/",
+    "location": "(CFD Simulation Lab) 2호관(북) 265A호",
+    "contact_email": "",
+    "contact_phone": "(CFD Simulation Lab) 2호관(북) 265A호",
+    "description": "연료전지, 차세대전지, 수소저장합금"
+  },
+  "86": {
+    "lab_id": 86,
+    "kor_name": "전력변환 연구실",
+    "eng_name": "Electric Power Conversion Laboratory",
+    "professor": "유지원",
+    "homepage": "https://sites.google.com/view/iepcl",
+    "location": "항공 304호",
+    "contact_email": "",
+    "contact_phone": "",
+    "description": "전력전자 및 전기자동차/UAM 구동시스템 연구"
   }
 }
