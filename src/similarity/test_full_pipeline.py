@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 # src 경로 추가
-src_path = Path(__file__).parent.parent / "src"
+src_path = Path(__file__).parent.parent
 sys.path.insert(0, str(src_path))
 
 from similarity import (
@@ -29,27 +29,84 @@ def test_full_pipeline():
     print("="*80)
     
     # ========================================================================
+    # 학생 프로필 정의 (1단계 + 2단계 통합)
+    # ========================================================================
+    
+    # 옵션 1: 컴퓨터 비전 전공자 (현재 비활성)
+    # student_profile = StudentProfile(
+    #     # 1단계: 후보군 생성용
+    #     research_interests="이미지 분류",
+        
+    #     # 2단계: 재랭킹용 문장형 데이터
+    #     intro1="컴퓨터 비전과 딥러닝을 활용한 이미지 인식 연구에 관심이 있습니다. "
+    #            "특히 객체 탐지와 이미지 분류 분야에서 최신 딥러닝 모델을 연구하고 싶습니다.",
+    #     intro2="Python, PyTorch, TensorFlow를 사용하여 YOLO 기반 실시간 객체 탐지 시스템을 구현한 경험이 있습니다. "
+    #            "OpenCV를 활용한 영상 처리와 데이터 전처리에도 익숙합니다.",
+    #     intro3="Vision Transformer와 같은 차세대 비전 모델을 연구하여, "
+    #            "실시간 영상 분석 시스템의 성능을 향상시키는 것이 목표입니다.",
+    #     portfolio="[프로젝트 1] YOLO v5 기반 실시간 객체 탐지 시스템 (정확도 92%) "
+    #               "[프로젝트 2] GAN을 이용한 이미지 생성 및 스타일 변환 "
+    #               "[프로젝트 3] Vision Transformer 모델 성능 최적화 연구",
+    #     major="컴퓨터공학",
+    #     certifications="정보처리기사, 빅데이터분석기사",
+    #     awards="AI 해커톤 대회 우수상, 캡스톤 디자인 금상",
+    #     tech_stack="Python, PyTorch, TensorFlow, OpenCV, scikit-learn, NumPy, Pandas",
+    #     toeic_score="850",
+    #     english_proficiency="중상",
+    #     gpa="4.0"
+    # )
+    
+    # 옵션 2: 네트워크/보안 전공자 (현재 활성)
+    student_profile = StudentProfile(
+        # 1단계: 후보군 생성용
+        research_interests="네트워크 보안, 무선 통신, IoT 시스템",
+        
+        # 2단계: 재랭킹용 문장형 데이터
+        intro1="네트워크 보안과 무선 통신 프로토콜에 관심이 있습니다. "
+               "특히 IoT 환경에서의 경량 암호화, 침입 탐지 시스템, 5G/6G 네트워크 보안 연구를 하고 싶습니다.",
+        intro2="Python과 C를 사용하여 SDN 기반 DDoS 탐지 시스템을 구축한 경험이 있습니다. "
+               "Wireshark, Scapy를 활용한 패킷 분석과 Mininet으로 네트워크 시뮬레이션을 진행했습니다.",
+        intro3="차세대 무선 네트워크에서 AI 기반 이상 트래픽 탐지와 "
+               "경량 블록체인을 활용한 IoT 보안 프레임워크를 연구하는 것이 목표입니다.",
+        portfolio="[프로젝트 1] OpenFlow 기반 SDN 컨트롤러 DDoS 탐지 시스템 (탐지율 94%) "
+                  "[프로젝트 2] LoRaWAN IoT 네트워크 보안 분석 및 취약점 진단 "
+                  "[프로젝트 3] 머신러닝 기반 네트워크 침입 탐지 모델 (Random Forest, 정확도 96%) "
+                  "[프로젝트 4] AES-GCM 경량 암호화 라이브러리 STM32 포팅",
+        major="컴퓨터공학",
+        certifications="정보처리기사, 정보보안기사",
+        awards="네트워크 보안 경진대회 우수상, 사이버 보안 해커톤 장려상",
+        tech_stack="Python, C, Wireshark, Scapy, Mininet, OpenFlow, NS-3, Docker, Kali Linux, Metasploit",
+        toeic_score="880",
+        english_proficiency="상",
+        gpa="3.9"
+    )
+    
+    # ========================================================================
     # 1단계: 후보군 생성 (10~20개)
     # ========================================================================
     print("\n" + "="*80)
     print("1단계: 후보군 생성")
     print("="*80)
     
-    # 테스트 학생 (1단계용)
-    student_query = Student(
-        research_interests="컴퓨터 비전, 딥러닝, 객체 탐지"
-    )
+    # StudentProfile에서 research_interests 추출하여 후보군 생성
+    student_query = Student(research_interests=student_profile.research_interests)
     
     # 후보군 생성기 초기화
     generator = CandidateGenerator()
     
     # 후보군 생성
-    candidates = generator.generate_candidates(
+    result = generator.get_candidates_with_scores(
         student_query,
-        top_k=10,
-        bm25_weight=0.4,
-        embedding_weight=0.6
+        final_top_k=10
     )
+    
+    # 결과에서 연구실 리스트 추출
+    candidates = []
+    for lab_id, lab_info in result.items():
+        # 연구실 객체는 generator.labs에서 id로 찾기
+        lab = next((l for l in generator.labs if l.id == lab_id), None)
+        if lab:
+            candidates.append(lab)
     
     print(f"\n✅ 후보군 생성 완료: {len(candidates)}개 연구실")
     for i, lab in enumerate(candidates[:5], 1):
@@ -61,27 +118,6 @@ def test_full_pipeline():
     print("\n" + "="*80)
     print("2단계: 재랭킹")
     print("="*80)
-    
-    # 테스트 학생 (2단계용 - 상세 프로필)
-    student_profile = StudentProfile(
-        intro1="컴퓨터 비전과 딥러닝을 활용한 이미지 인식 연구에 관심이 있습니다. "
-               "특히 객체 탐지와 이미지 분류 분야에서 최신 딥러닝 모델을 연구하고 싶습니다.",
-        intro2="Python, PyTorch, TensorFlow를 사용하여 YOLO 기반 실시간 객체 탐지 시스템을 구현한 경험이 있습니다. "
-               "OpenCV를 활용한 영상 처리와 데이터 전처리에도 익숙합니다.",
-        intro3="Vision Transformer와 같은 차세대 비전 모델을 연구하여, "
-               "실시간 영상 분석 시스템의 성능을 향상시키는 것이 목표입니다.",
-        portfolio="[프로젝트 1] YOLO v5 기반 실시간 객체 탐지 시스템 (정확도 92%) "
-                  "[프로젝트 2] GAN을 이용한 이미지 생성 및 스타일 변환 "
-                  "[프로젝트 3] Vision Transformer 모델 성능 최적화 연구",
-        major="컴퓨터공학",
-        certifications="정보처리기사, 빅데이터분석기사",
-        awards="AI 해커톤 대회 우수상, 캡스톤 디자인 금상",
-        tech_stack="Python, PyTorch, TensorFlow, OpenCV, scikit-learn, NumPy, Pandas",
-        toeic_score="850",
-        english_proficiency="중상",
-        gpa="4.0"
-    )
-    
     # 기본 설정 스코어러
     print("\n📊 기본 설정으로 재랭킹")
     scorer_default = RerankingScorer(DEFAULT_CONFIG)

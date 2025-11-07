@@ -32,6 +32,9 @@ from .candidate_generator import Lab, Student
 @dataclass
 class StudentProfile:
     """학생 프로필 (재랭킹용 상세 정보)"""
+    # 희망 연구 분야 (1단계 후보군 생성용)
+    research_interests: str = ""  # 간단한 검색 키워드
+    
     # 문장형 데이터
     intro1: str = ""  # 관심 연구 분야
     intro2: str = ""  # 기술 경험
@@ -54,6 +57,7 @@ class StudentProfile:
     def to_dict(self) -> Dict:
         """딕셔너리로 변환"""
         return {
+            "research_interests": self.research_interests,
             "intro1": self.intro1,
             "intro2": self.intro2,
             "intro3": self.intro3,

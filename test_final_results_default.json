@@ -1,7 +1,7 @@
 [
   {
-    "lab_id": "65",
-    "lab_name": "컴퓨터 구조 및 메모리 시스템 연구실",
+    "lab_id": "36",
+    "lab_name": "컴퓨터비전 연구실",
     "final_score": 0.6515,
     "sentence_score": 0.7194,
     "keyword_score": 0.325,
@@ -27,8 +27,8 @@
     }
   },
   {
-    "lab_id": "47",
-    "lab_name": "컴퓨터네트워크 연구실",
+    "lab_id": "77",
+    "lab_name": "멀티모달 인공지능 연구실",
     "final_score": 0.6515,
     "sentence_score": 0.7194,
     "keyword_score": 0.325,
@@ -54,8 +54,8 @@
     }
   },
   {
-    "lab_id": "73",
-    "lab_name": "생성 컴퓨팅 연구실",
+    "lab_id": "75",
+    "lab_name": "바이오 및 의료 혁신 인공지능 연구실",
     "final_score": 0.6515,
     "sentence_score": 0.7194,
     "keyword_score": 0.325,
@@ -81,8 +81,8 @@
     }
   },
   {
-    "lab_id": "74",
-    "lab_name": "로봇 지능 학습 및 시스템 연구실",
+    "lab_id": "67",
+    "lab_name": "데이터 과학 연구실",
     "final_score": 0.6515,
     "sentence_score": 0.7194,
     "keyword_score": 0.325,
@@ -108,8 +108,8 @@
     }
   },
   {
-    "lab_id": "49",
-    "lab_name": "컴퓨터 지능 보안 연구실",
+    "lab_id": "72",
+    "lab_name": "AI 연구그룹",
     "final_score": 0.6515,
     "sentence_score": 0.7194,
     "keyword_score": 0.325,
