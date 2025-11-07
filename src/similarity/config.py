@@ -93,9 +93,9 @@ class NumericSimilarityConfig:
 class ScorerConfig:
     """전체 재랭킹 스코어러 설정"""
     # 대분류 가중치 (문장형, 키워드형, 정량형)
-    sentence_weight: float = 0.4
-    keyword_weight: float = 0.35
-    numeric_weight: float = 0.25
+    sentence_weight: float = 0.6
+    keyword_weight: float = 0.3
+    numeric_weight: float = 0.1
     
     # 세부 설정
     sentence: SentenceSimilarityConfig = field(default_factory=SentenceSimilarityConfig)

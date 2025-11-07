@@ -23,6 +23,7 @@ ENV/
 .DS_Store
 Thumbs.db
 
+.env
 # Data (선택적으로 버전 관리에서 제외할 수 있음)
 # crawl_data/
 # data/

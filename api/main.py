@@ -24,12 +24,20 @@ from similarity import (
     ACADEMIC_CONFIG
 )
 
+# 이력서 API 라우터 임포트
+from api.resume import router as resume_router
+from api.diagnosis import router as diagnosis_router
+
 # FastAPI 앱 생성
 app = FastAPI(
     title="연구실 추천 시스템 API",
     description="학생 프로필 기반 연구실 추천 시스템",
     version="1.0.0"
 )
+
+# 라우터 등록
+app.include_router(resume_router)
+app.include_router(diagnosis_router)
 
 # CORS 설정
 app.add_middleware(
