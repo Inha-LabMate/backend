@@ -101,7 +101,11 @@ class LabResponse(BaseModel):
     rank: int
     lab_name: str
     professor: str
+    research_description: str  # 연구 내용
     final_score: float
+    fitness_level: str  # 적합도: "매우 높음", "높음", "낮음"
+    
+    # 대분류 점수
     sentence_score: float
     keyword_score: float
     numeric_score: float
@@ -216,30 +220,45 @@ async def recommend_labs(profile: StudentProfileRequest):
         # 재랭킹 수행
         results = scorer.rerank_candidates(student_profile, candidates, top_k=profile.top_k)
         
+        # 적합도 판정 함수
+        def get_fitness_level(score: float) -> str:
+            if score >= 0.7:
+                return "매우 높음"
+            elif score >= 0.5:
+                return "높음"
+            else:
+                return "낮음"
+        
         # 응답 생성
-        recommendations = [
-            LabResponse(
-                rank=i + 1,
-                lab_name=r.lab_name,
-                professor=r.professor,
-                final_score=r.final_score,
-                sentence_score=r.sentence_score,
-                keyword_score=r.keyword_score,
-                numeric_score=r.numeric_score,
-                intro1_score=r.intro1_score,
-                intro2_score=r.intro2_score,
-                intro3_score=r.intro3_score,
-                portfolio_score=r.portfolio_score,
-                major_score=r.major_score,
-                certification_score=r.certification_score,
-                award_score=r.award_score,
-                tech_stack_score=r.tech_stack_score,
-                language_score=r.language_score,
-                proficiency_score=r.proficiency_score,
-                gpa_score=r.gpa_score
+        recommendations = []
+        for i, r in enumerate(results):
+            # 연구실 정보 찾기
+            lab = next((l for l in candidates if l.name == r.lab_name), None)
+            
+            recommendations.append(
+                LabResponse(
+                    rank=i + 1,
+                    lab_name=r.lab_name,
+                    professor=lab.professor if lab else "Unknown",
+                    research_description=lab.description if lab else "",
+                    final_score=r.final_score,
+                    fitness_level=get_fitness_level(r.final_score),
+                    sentence_score=r.sentence_score,
+                    keyword_score=r.keyword_score,
+                    numeric_score=r.numeric_score,
+                    intro1_score=r.intro1_score,
+                    intro2_score=r.intro2_score,
+                    intro3_score=r.intro3_score,
+                    portfolio_score=r.portfolio_score,
+                    major_score=r.major_score,
+                    certification_score=r.certification_score,
+                    award_score=r.award_score,
+                    tech_stack_score=r.tech_stack_score,
+                    language_score=r.language_score,
+                    proficiency_score=r.proficiency_score,
+                    gpa_score=r.gpa_score
+                )
             )
-            for i, r in enumerate(results)
-        ]
         
         return RecommendationResponse(
             status="success",

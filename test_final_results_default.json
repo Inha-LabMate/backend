@@ -1,17 +1,17 @@
 [
   {
-    "lab_id": "36",
-    "lab_name": "컴퓨터비전 연구실",
-    "final_score": 0.6515,
-    "sentence_score": 0.7194,
+    "lab_id": "53",
+    "lab_name": "분산 네트워크 시스템 연구실",
+    "final_score": 0.6331,
+    "sentence_score": 0.726,
     "keyword_score": 0.325,
     "numeric_score": 1.0,
     "details": {
       "sentence": {
-        "intro1": 0.7978,
-        "intro2": 0.5643,
-        "intro3": 0.7813,
-        "portfolio": 0.7308
+        "intro1": 0.8095,
+        "intro2": 0.5673,
+        "intro3": 0.7977,
+        "portfolio": 0.7272
       },
       "keyword": {
         "major": 0.0,
@@ -27,18 +27,18 @@
     }
   },
   {
-    "lab_id": "77",
-    "lab_name": "멀티모달 인공지능 연구실",
-    "final_score": 0.6515,
-    "sentence_score": 0.7194,
+    "lab_id": "42",
+    "lab_name": "멀티미디어네트워크 연구실",
+    "final_score": 0.6331,
+    "sentence_score": 0.726,
     "keyword_score": 0.325,
     "numeric_score": 1.0,
     "details": {
       "sentence": {
-        "intro1": 0.7978,
-        "intro2": 0.5643,
-        "intro3": 0.7813,
-        "portfolio": 0.7308
+        "intro1": 0.8095,
+        "intro2": 0.5673,
+        "intro3": 0.7977,
+        "portfolio": 0.7272
       },
       "keyword": {
         "major": 0.0,
@@ -54,18 +54,18 @@
     }
   },
   {
-    "lab_id": "75",
-    "lab_name": "바이오 및 의료 혁신 인공지능 연구실",
-    "final_score": 0.6515,
-    "sentence_score": 0.7194,
+    "lab_id": "68",
+    "lab_name": "지능형 임베디드 소프트웨어 연구실",
+    "final_score": 0.6331,
+    "sentence_score": 0.726,
     "keyword_score": 0.325,
     "numeric_score": 1.0,
     "details": {
       "sentence": {
-        "intro1": 0.7978,
-        "intro2": 0.5643,
-        "intro3": 0.7813,
-        "portfolio": 0.7308
+        "intro1": 0.8095,
+        "intro2": 0.5673,
+        "intro3": 0.7977,
+        "portfolio": 0.7272
       },
       "keyword": {
         "major": 0.0,
@@ -81,18 +81,18 @@
     }
   },
   {
-    "lab_id": "67",
-    "lab_name": "데이터 과학 연구실",
-    "final_score": 0.6515,
-    "sentence_score": 0.7194,
+    "lab_id": "30",
+    "lab_name": "이동통신 연구실",
+    "final_score": 0.6331,
+    "sentence_score": 0.726,
     "keyword_score": 0.325,
     "numeric_score": 1.0,
     "details": {
       "sentence": {
-        "intro1": 0.7978,
-        "intro2": 0.5643,
-        "intro3": 0.7813,
-        "portfolio": 0.7308
+        "intro1": 0.8095,
+        "intro2": 0.5673,
+        "intro3": 0.7977,
+        "portfolio": 0.7272
       },
       "keyword": {
         "major": 0.0,
@@ -108,18 +108,18 @@
     }
   },
   {
-    "lab_id": "72",
-    "lab_name": "AI 연구그룹",
-    "final_score": 0.6515,
-    "sentence_score": 0.7194,
+    "lab_id": "37",
+    "lab_name": "신호처리 및 머신러닝 연구실",
+    "final_score": 0.6331,
+    "sentence_score": 0.726,
     "keyword_score": 0.325,
     "numeric_score": 1.0,
     "details": {
       "sentence": {
-        "intro1": 0.7978,
-        "intro2": 0.5643,
-        "intro3": 0.7813,
-        "portfolio": 0.7308
+        "intro1": 0.8095,
+        "intro2": 0.5673,
+        "intro3": 0.7977,
+        "portfolio": 0.7272
       },
       "keyword": {
         "major": 0.0,

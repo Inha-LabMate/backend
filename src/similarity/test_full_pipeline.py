@@ -58,10 +58,7 @@ def test_full_pipeline():
     
     # 옵션 2: 네트워크/보안 전공자 (현재 활성)
     student_profile = StudentProfile(
-        # 1단계: 후보군 생성용
         research_interests="네트워크 보안, 무선 통신, IoT 시스템",
-        
-        # 2단계: 재랭킹용 문장형 데이터
         intro1="네트워크 보안과 무선 통신 프로토콜에 관심이 있습니다. "
                "특히 IoT 환경에서의 경량 암호화, 침입 탐지 시스템, 5G/6G 네트워크 보안 연구를 하고 싶습니다.",
         intro2="Python과 C를 사용하여 SDN 기반 DDoS 탐지 시스템을 구축한 경험이 있습니다. "
